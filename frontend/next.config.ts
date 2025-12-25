@@ -22,6 +22,24 @@ const nextConfig: NextConfig = {
       },
     ]);
   },
+  webpack: (config, { isServer }) => {
+    // Ignore React Native modules that MetaMask SDK tries to import
+    // These are not needed in browser environment
+    if (!isServer) {
+      config.resolve.fallback = {
+        ...config.resolve.fallback,
+        '@react-native-async-storage/async-storage': false,
+        'react-native': false,
+      };
+      
+      // Ignore these modules in webpack
+      config.resolve.alias = {
+        ...config.resolve.alias,
+        '@react-native-async-storage/async-storage': false,
+      };
+    }
+    return config;
+  },
 };
 
 export default nextConfig;
